@@ -1,4 +1,5 @@
-import exercicio5
+import bsc
+import numpy as np
 
 
 def file_to_string(file_name):
@@ -33,7 +34,7 @@ def repetition_code_decoder(text):
 def repetition_code(file_name, p):
     text = file_to_string(file_name)
     coded = repetition_code_coder(text)
-    transmitted_string = exercicio5.bsc(coded, p)
+    transmitted_string = bsc.bsc(coded, p)
     decoded = repetition_code_decoder(transmitted_string)
     return decoded
 
@@ -52,15 +53,57 @@ def hamming_coder(text):
     print(coded_string)
 
 
+def hamming_decoder(text):
+    decoded_string = ""
+    for i in range(0, len(text), 7):
+        code_word = text[i + 0] + text[i + 1] + text[i + 2] + text[i + 3] + text[i + 4] + text[i + 5] + text[i + 6]
+        b2 = str(int(code_word[0]) ^ int(code_word[2]) ^ int(code_word[3]))
+        b1 = str(int(code_word[0]) ^ int(code_word[1]) ^ int(code_word[3]))
+        b0 = str(int(code_word[1]) ^ int(code_word[2]) ^ int(code_word[3]))
+        if b0 != code_word[4] or b1 != code_word[5] or b2 != code_word[6]:
+            a = [int(code_word[0]), int(code_word[1]), int(code_word[2]), int(code_word[3]),
+                 int(code_word[4]), int(code_word[5]), int(code_word[6])]
+            error = bin(error_pattern(a))
+            error = error[len(error)-2:]
+            word = int(error) ^ int(code_word)
+            size = len(str(word))
+            decoded_string += str(word)[:size-3]
+        else:
+            size = len(str(code_word))
+            decoded_string += str(code_word)[:size-3]
+
+
+def error_pattern(a):
+    h = [[0, 1, 1],
+         [1, 1, 0],
+         [1, 0, 1],
+         [1, 1, 1],
+         [1, 0, 0],
+         [0, 1, 0],
+         [0, 0, 1]]
+    c = np.dot(a, h)
+    c = np.array(c)
+    array = [0, 0, 0]
+    for i in range(len(c)):
+        if c[i] > 1:
+            array[i] = 1
+    index = h.index(array)
+    p = (len(h) - 1) - index
+    to_return = pow(2, p)
+    return to_return
+
+
 def main():
-    hamming_coder("oi")
+    hamming_decoder("1000011")
+    # error_pattern([0, 1, 0, 0, 0, 1, 1])
+    # hamming_coder("oi")
     # print(repetition_code("file1.txt", pow(10, -5)))
     # a = repetition_code_coder("oi")
     # print(a)
     # b = repetition_code_decoder(a)
     # print(b)
     # print(file_to_string("file4.txt"))
-    # exercicio5.bsc(file_to_string("file4.txt"), 0.1)
+    # bsc.bsc(file_to_string("file4.txt"), 0.1)
 
 
 if __name__ == '__main__':
