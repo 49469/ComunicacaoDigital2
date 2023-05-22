@@ -71,6 +71,7 @@ def hamming_decoder(text):
         else:
             size = len(str(code_word))
             decoded_string += str(code_word)[:size-3]
+    return decoded_string
 
 
 def error_pattern(a):
