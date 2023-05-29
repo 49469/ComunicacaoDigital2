@@ -39,6 +39,7 @@ def hamming_code(file_name, p):
     toReturn = ""
     for i in range(0, len(decoded), 8):
         toReturn += chr(int(decoded[i:i + 8], 2))
+    print("The value of BER is", BER(text, toReturn))
     print(decoded)
     return toReturn
 
@@ -76,13 +77,13 @@ def hamming_decoder(text):
             a = [int(code_word[0]), int(code_word[1]), int(code_word[2]), int(code_word[3]),
                  int(code_word[4]), int(code_word[5]), int(code_word[6])]
             error = bin(error_pattern(a))
-            error = error[len(error)-2:]
+            error = error[len(error) - 2:]
             word = int(error) ^ int(code_word)
             size = len(str(word))
-            decoded_string += str(word)[:size-3]
+            decoded_string += str(word)[:size - 3]
         else:
             size = len(str(code_word))
-            decoded_string += str(code_word)[:size-3]
+            decoded_string += str(code_word)[:size - 3]
     return decoded_string
 
 
@@ -106,18 +107,20 @@ def error_pattern(a):
     return to_return
 
 
+def BER(original, received):
+    errors = 0
+    for i in range(len(original)):
+        if original[i] != received[i]:
+            o = ''.join(format(ord(c), '08b') for c in original)
+            r = ''.join(format(ord(c), '08b') for c in received)
+            for j in range(len(o)):
+                if o[j] != r[j]:
+                    errors += 1
+    return errors / len(original)
+
+
 def main():
-    print(hamming_code("file1.txt", pow(10, -5)))
-    # hamming_decoder("1000011")
-    # error_pattern([0, 1, 0, 0, 0, 1, 1])
-    # hamming_coder("oi")
-    # print(repetition_code("file1.txt", pow(10, -5)))
-    # a = repetition_code_coder("oi")
-    # print(a)
-    # b = repetition_code_decoder(a)
-    # print(b)
-    # print(file_to_string("file4.txt"))
-    # bsc.bsc(file_to_string("file4.txt"), 0.1)
+    print(hamming_code("file1.txt", pow(10, -2)))
 
 
 if __name__ == '__main__':
