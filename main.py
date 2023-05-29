@@ -31,6 +31,18 @@ def repetition_code_decoder(text):
     return decoded_string
 
 
+def hamming_code(file_name, p):
+    text = file_to_string(file_name)
+    coded = hamming_coder(text)
+    transmitted_string = bsc.bsc(coded, p)
+    decoded = hamming_decoder(transmitted_string)
+    toReturn = ""
+    for i in range(0, len(decoded), 8):
+        toReturn += chr(int(decoded[i:i + 8], 2))
+    print(decoded)
+    return toReturn
+
+
 def repetition_code(file_name, p):
     text = file_to_string(file_name)
     coded = repetition_code_coder(text)
@@ -50,7 +62,7 @@ def hamming_coder(text):
         for j in range(4):
             coded_string += binary_string[i + j]
         coded_string += str(b0) + str(b1) + str(b2)
-    print(coded_string)
+    return coded_string
 
 
 def hamming_decoder(text):
@@ -95,7 +107,8 @@ def error_pattern(a):
 
 
 def main():
-    hamming_decoder("1000011")
+    print(hamming_code("file1.txt", pow(10, -5)))
+    # hamming_decoder("1000011")
     # error_pattern([0, 1, 0, 0, 0, 1, 1])
     # hamming_coder("oi")
     # print(repetition_code("file1.txt", pow(10, -5)))

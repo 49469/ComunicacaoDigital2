@@ -16,10 +16,12 @@ def bsc(text, p):
     total = len(received_string)
     flipped_bits = p * total
     BER = flipped_bits / total
+    print("BSC")
     print("The p value is", p)
     print("The BER value is", BER)
     print("Transmitted string: ", transmitted_string)
     print("Received string: ", received_string)
+    print("BSC")
     return received_string
 
 
