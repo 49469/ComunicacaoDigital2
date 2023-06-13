@@ -2,25 +2,20 @@ import numpy as np
 
 
 def bsc(text, p):
-    transmitted_string = text
-    binary_string = ''.join(format(ord(c), '08b') for c in transmitted_string)
-    random_sequence = np.random.random(size=len(binary_string))
-    received_bits = []
-    for i, bit in enumerate(binary_string):
+    random_sequence = np.random.random(size=len(text))
+    received_string = ""
+    for i, bit in enumerate(text):
         if random_sequence[i] < p:
             flipped_bit = str(1 - int(bit))
-            received_bits.append(flipped_bit)
+            received_string += flipped_bit
         else:
-            received_bits.append(bit)
-    received_string = "".join([chr(int("".join(received_bits[i:i + 8]), 2)) for i in range(0, len(received_bits), 8)])
+            received_string += bit
     total = len(received_string)
     flipped_bits = p * total
     BER = flipped_bits / total
     print("BSC")
     print("The p value is", p)
     print("The BER value is", BER)
-    print("Transmitted string: ", transmitted_string)
-    print("Received string: ", received_string)
     print("BSC")
     return received_string
 
@@ -42,19 +37,12 @@ def interleaving(text, lines, col):
     return string
 
 
-def exercise5b2(string, p, l, c):
+def bsc_with_interleaving(string, p, l, c):
     if l * c != len(string):
         return "error: lines*col must be equal to the size of text"
     text_a = interleaving(string, l, c)
-    message = bsc(text_a, p)
-    text_b = interleaving(message, c, l)
+    a = ''.join(format(ord(c), '08b') for c in text_a)
+    message = bsc(a, p)
+    b = "".join([chr(int("".join(message[i:i + 8]), 2)) for i in range(0, len(message), 8)])
+    text_b = interleaving(b, c, l)
     return text_b
-
-
-def main():
-    print(bsc("Alices", 0.1))
-    print(exercise5b2("Alices", 0.1, 2, 3))
-
-
-if __name__ == '__main__':
-    main()
