@@ -1,5 +1,4 @@
 import bsc
-import numpy as np
 
 
 def file_to_string(file_name):
@@ -132,6 +131,7 @@ def exercise_1b():
     for j in range(1, 5):
         file_name = "file" + str(j) + ".txt"
         text = file_to_string(file_name)
+
         string_length = len(file_name)
         sqrt_length = int(string_length ** 0.5)
         num_lines = 0
