@@ -40,6 +40,7 @@ def exercise_2b():
     receive_data(ser)
     checkSum = ser.readline().decode('utf-8').strip()
     ser.close()
+
     text = exercise1.file_to_string('data1.txt')
     binary = exercise1.string_to_binary(text)
 
@@ -51,23 +52,40 @@ def exercise_2b():
             binary_list[i] = "1"
 
     binary_modified = ''.join(binary_list)
-
     decoded = exercise1.binary_to_string(binary_modified)
-
-    fletcher32 = get_fletcher16(decoded)
+    fletcher16 = get_fletcher16(decoded)
     print("checkSum Arduino: " + checkSum)
-    print(fletcher32)
+    print(fletcher16)
 
 
-def s():
-    a = 123
-    b = 0
-    while a > 0:
-        b 
+def exercise_2c():
+    portName = "COM4"
+    ser = serial.Serial(portName, 9600)
+    receive_data(ser)
+    checkSum = ser.readline().decode('utf-8').strip()
+    ser.close()
+
+    text = exercise1.file_to_string('data1.txt')
+    binary = exercise1.string_to_binary(text)
+
+    binary_list = list(binary)
+    hLength = int(len(binary_list)/2)
+
+    for i in range(hLength):
+        if binary_list[i] == "1":
+            binary_list[i] = "0"
+        else:
+            binary_list[i] = "1"
+
+    binary_modified = ''.join(binary_list)
+    decoded = exercise1.binary_to_string(binary_modified)
+    fletcher16 = get_fletcher16(decoded)
+    print("checkSum Arduino: " + checkSum)
+    print(fletcher16)
 
 
 def main():
-    exercise_2b()
+    exercise_2c()
 
 
 if __name__ == '__main__':

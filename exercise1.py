@@ -14,6 +14,14 @@ def binary_to_string(binary_string):
     return "".join([chr(int("".join(binary_string[i:i + 8]), 2)) for i in range(0, len(binary_string), 8)])
 
 
+def n(text, decoded):
+    n = 0
+    for i in range(len(text)):
+        if text[i] != decoded[i]:
+            n += 1
+    return n
+
+
 def repetition_code_coder(text):
     binary_string = string_to_binary(text)
     coded_string = ""
@@ -44,8 +52,10 @@ def repetition_code(text, p):
 
     decoded = repetition_code_decoder(transmitted_string)
     toReturn = binary_to_string(decoded)
-    print("The value of BER is", BER(text, toReturn))
-    return decoded
+    b = BER(text, toReturn)
+    print("The value of BER is", b)
+
+    return toReturn
 
 
 def hamming_code(text, p):
@@ -55,7 +65,8 @@ def hamming_code(text, p):
     decoded = hamming_decoder(transmitted_string)
 
     toReturn = binary_to_string(decoded)
-    print("The value of BER is", BER(text, toReturn))
+    b = BER(text, toReturn)
+    print("The value of BER is", b)
     return toReturn
 
 
@@ -120,11 +131,14 @@ def exercise_1a():
         for i in range(1, 6):
             print("\n\nFile: " + file_name + " with BER: 10^" + str(-i) + " without interleaving\n\n")
             print("- BER1, entre a entrada e a saída do BSC, sem controlo de erros:")
-            bsc.bsc(string_to_binary(text), pow(10, -i))
+            toReturn = bsc.bsc(string_to_binary(text), pow(10, -i))
+            print("Number of different symbols:", n(text, binary_to_string(toReturn)))
             print("\n- BER2, após a aplicação de código de repetição (3, 1) sobre o BSC, em modo de correção:")
-            repetition_code(text, pow(10, -i))
+            toReturn2 = repetition_code(text, pow(10, -i))
+            print("Number of different symbols:", n(text, toReturn2))
             print("\n- BER3, após a aplicação de código de Hamming (7, 4) sobre o BSC, em modo de correção:")
-            hamming_code(text, pow(10, -i))
+            toReturn3 = hamming_code(text, pow(10, -i))
+            print("Number of different symbols:", n(text, toReturn3))
 
 
 def exercise_1b():
@@ -132,7 +146,7 @@ def exercise_1b():
         file_name = "file" + str(j) + ".txt"
         text = file_to_string(file_name)
 
-        string_length = len(file_name)
+        string_length = len(text)
         sqrt_length = int(string_length ** 0.5)
         num_lines = 0
         num_columns = 0
@@ -145,17 +159,20 @@ def exercise_1b():
         for i in range(1, 6):
             print("\n\nFile: " + file_name + " with BER: 10^" + str(-i) + " with interleaving\n\n")
             print("- BER1, entre a entrada e a saída do BSC, sem controlo de erros:")
-            bsc.interleaving(text, num_lines, num_columns)
-            bsc.bsc(string_to_binary(text), pow(10, -i))
-            bsc.interleaving(text, num_columns, num_lines)
+            text1 = bsc.interleaving(text, num_lines, num_columns)
+            text1 = binary_to_string(bsc.bsc(string_to_binary(text1), pow(10, -i)))
+            toReturn = bsc.interleaving(text1, num_columns, num_lines)
+            print("Number of different symbols:", n(text, toReturn))
             print("\n- BER2, após a aplicação de código de repetição (3, 1) sobre o BSC, em modo de correção:")
-            bsc.interleaving(text, num_lines, num_columns)
-            repetition_code(text, pow(10, -i))
-            bsc.interleaving(text, num_columns, num_lines)
+            text2 = bsc.interleaving(text, num_lines, num_columns)
+            text2 = repetition_code(text2, pow(10, -i))
+            toReturn2 = bsc.interleaving(text2, num_columns, num_lines)
+            print("Number of different symbols:", n(text, toReturn2))
             print("\n- BER3, após a aplicação de código de Hamming (7, 4) sobre o BSC, em modo de correção:")
-            bsc.interleaving(text, num_lines, num_columns)
-            hamming_code(text, pow(10, -i))
-            bsc.interleaving(text, num_columns, num_lines)
+            text3 = bsc.interleaving(text, num_lines, num_columns)
+            text3 = hamming_code(text3, pow(10, -i))
+            toReturn3 = bsc.interleaving(text3, num_columns, num_lines)
+            print("Number of different symbols:", n(text, toReturn3))
 
 
 def BER(original, received):
